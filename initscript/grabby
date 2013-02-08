@@ -1,0 +1,59 @@
+
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          grabby
+# Required-Start:    $network $named $remote_fs $syslog
+# Required-Stop:     $network $named $remote_fs $syslog
+# Should-Start:      puppet
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+### END INIT INFO 
+
+set -e
+
+for i in `cat /data/grabby/stomp.conf`
+    do export $i
+    done
+
+MCOLLECTIVE_EXTRA_OPTS="--config /etc/mcollective/client.cfg"
+
+RUNAS="www-data"
+
+d_start() {
+    sudo -E -u $RUNAS /usr/bin/ruby /data/grabby/app.rb > /dev/null 2>&1 &
+}
+
+d_stop() {
+    echo "Shutting down Grabby"
+    /usr/bin/pkill -9 -f "/data/grabby/app.rb"
+}
+
+case "$1" in
+    start)
+        echo -n "Starting grabby"
+        d_start
+        echo "."
+        ;;
+    stop)
+        echo -n "Stopping grabby"
+        d_stop
+        echo "."
+        ;;
+    restart|force-reload)
+        echo -n "Restarting grabby"
+        d_stop
+        sleep 1
+        d_start
+        echo "."
+        ;;
+    status)
+        ps afx `cat $PIDFILE`
+        ;;
+    *)
+        echo "Usage: grabby {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

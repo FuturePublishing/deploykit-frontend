@@ -1,0 +1,37 @@
+!!!
+%html
+    %head
+        %title Grabby
+        %link(rel ="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css")
+        %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"}
+        %script{:src => "jsfolder/bootstrap-tabs.js"}
+        %style(type="text/css")
+            :plain
+                html, body {background-color: #eee;}
+                body {padding-top: 40px;}
+                .container > footer p { text-align : center;}
+                .container > .content {
+                    background-color: #fff;
+                    padding: 20px;
+                    margin: 0-20px;
+                    -webkit-border-radius: 0 0 6px 6px;
+                    -moz-border-radius: 0 0 6px 6px;
+                    border-radius: 0 0 6px 6px;
+                    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+                    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+                    box-shadow: 0 1px 2px rgba(0,0,0,.15);}
+    %body
+    .topbar
+        .fill
+            .container
+                .brand(href="#")
+                    Grabby
+    .container
+        .content
+            .row
+                =yield
+        ="Logged in as #{@user}"
+        %footer
+            %p
+                Frontend by
+                %a(href="mailto:matthew.carroll@futurenet.com") Matt Carroll

@@ -1,0 +1,55 @@
+-preventsubmitrender = false
+.span4
+    %h2 Inputty
+    %form{ :action => "", :method => "post", :class => "form-stacked"}
+        %fieldset
+            %ul.unstyled
+                %li
+                    %label{:for => "repo"} Repo:
+                    %input{:type => "text", :name => "repo", :class => "text", :value => @repo}
+                %li
+                    %label{:for => "host"} Host:
+                    %input{:type => "text", :name => "host", :class => "text", :value => @host}
+                    -if @repo && @host
+                        %li
+                            -unless @taglist
+                                - preventsubmitrender = true
+                                = "Not a valid repository for this host"
+                            -else
+                                %label{:for => "tag"} Tag:
+                                %select{:name => "tag"}
+                                    -@taglist.each do |tag|
+                                        %option= tag
+                                    -if @branchlist
+                                        -@branchlist.each do |branch|
+                                            %option= branch
+            -unless preventsubmitrender
+                %input{:type => "submit", :value => "Submit", :class => "button"}
+            %a{ :href => "/clear"} Clear
+.span10
+    %h3 Outputty
+    -if @output
+        %ul(class = "tabs" data-tabs="tabs")
+            -["predeploy","deploy","postdeploy"].each do |k|
+                -if k == "deploy"
+                    -klass = "active"
+                -else
+                    -klass = ""
+                -if @output[k]["stat"] == 0
+                    -btnklass = "success"
+                -else
+                    -btnklass = "danger"
+                %li{:class => klass}
+                    %a{:href => "##{k}"}
+                        %button{:class => "btn #{btnklass}"}
+                            =k.capitalize
+        .tab-content{:class => "tab-content"}
+            -["predeploy","deploy","postdeploy"].each do |k|
+                -if k=="deploy"
+                    -klass = "active"
+                -else
+                    -klass = ""
+                %div{:id => k, :class => klass}
+                    -@output[k].each_key do |key|
+                        %h3= key
+                        %pre= @output[k][key]
